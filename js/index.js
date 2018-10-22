@@ -9,8 +9,8 @@ var config = {
     physics: {
       default: 'arcade',
       arcade: {
-        debug: false,
-        gravity: { y: 0 }
+        debug: true,
+        gravity: { y: 500 }
       }
     },
     scene: {
@@ -21,11 +21,30 @@ var config = {
   };
    
   var game = new Phaser.Game(config);
+  var player;
+  var cursors;
    
   function preload() {
+    this.load.image('player', 'assets/images/player.png');
   }
      
   function create() {
+    player = this.physics.add.sprite(400, 300, 'player');
+    player.setCollideWorldBounds(true);
+    cursors = this.input.keyboard.createCursorKeys();
   }
    
-  function update() {}
+  function update() {
+    if (cursors.up.isDown)
+    {
+        player.body.setVelocityY(-400); // jump up
+    }
+    if (cursors.left.isDown)
+    {
+        player.body.setVelocityX(-1500); // jump up
+    }
+    if (cursors.right.isDown)
+    {
+        player.body.setVelocityX(1500); // jump up
+    }
+  }
