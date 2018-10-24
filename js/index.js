@@ -4,13 +4,13 @@ var socket = io();
 
 var config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: window.innerWidth,
+    height: window.innerHeight,
     physics: {
       default: 'arcade',
       arcade: {
         debug: true,
-        gravity: { y: 500 }
+        gravity: { y: 0 }
       }
     },
     scene: {
@@ -22,7 +22,6 @@ var config = {
    
   var game = new Phaser.Game(config);
   var player;
-  var cursors;
    
   function preload() {
     this.load.image('player', 'assets/images/player.png');
@@ -30,21 +29,27 @@ var config = {
      
   function create() {
     player = this.physics.add.sprite(400, 300, 'player');
+    player.body.bounce.set(0.8);
     player.setCollideWorldBounds(true);
-    cursors = this.input.keyboard.createCursorKeys();
   }
    
   function update() {
-    if (cursors.up.isDown)
-    {
-        player.body.setVelocityY(-400); // jump up
-    }
-    if (cursors.left.isDown)
-    {
-        player.body.setVelocityX(-1500); // jump up
-    }
-    if (cursors.right.isDown)
-    {
-        player.body.setVelocityX(1500); // jump up
-    }
+    //player.body.setVelocityY(200); // jump up
+    this.input.on('pointerdown', function (pointer) {
+
+      var mousePos = new Phaser.Math.Vector2();
+      var playerPos = new Phaser.Math.Vector2();
+      var newPos = new Phaser.Math.Vector2();
+
+      mousePos = pointer.position;
+      playerPos = player.body.position;
+      var newPosX = mousePos.x - playerPos.x;
+      var newPosY = mousePos.y - playerPos.y;
+      newPos.x = newPosX;
+      newPos.y = newPosY;
+      newPos.normalize();
+
+      player.body.setVelocityY(newPos.y * -1 * 1000);
+      player.body.setVelocityX(newPos.x * -1 * 1000);
+    }, this);
   }
